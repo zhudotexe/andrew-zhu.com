@@ -1,0 +1,15 @@
+*.pdf
+*.png
+*.jpg
+*.jpeg
+*.zip
+*.ovpn
+*.exe
+*.DS_Store
+
+.idea/
+html/static
+html/ucsc
+html/img
+html/vpn
+html/avrae

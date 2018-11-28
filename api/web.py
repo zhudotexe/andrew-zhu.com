@@ -24,22 +24,22 @@ def clone_dicecloud():
     url = data.get('charUrl')
 
     if any(d is None for d in (username, password, api_key, url)):
-        return redirect("https://andrew-zhu.com/dnd/dicecloudcloner.html?success=0", code=302)
+        return redirect("https://andrew-zhu.com/dnd/dicecloudcloner.html?error=MISSING_FIELD", code=302)
 
     if 'dicecloud.com' in url:
         url = url.split('/character/')[-1].split('/')[0]
 
     response = requests.get(f"https://dicecloud.com/character/{url}/json?key={api_key}")
     if 399 < response.status_code < 600:
-        return redirect("https://andrew-zhu.com/dnd/dicecloudcloner.html?success=0", code=302)
+        return redirect("https://andrew-zhu.com/dnd/dicecloudcloner.html?error=BAD_API_KEY", code=302)
 
     id_map = {}
     try:
-        client = DicecloudClient(username, password)
+        client = DicecloudClient(username, password, debug=True)
         client.initialize()
         char_data = response.json()
     except:
-        return redirect("https://andrew-zhu.com/dnd/dicecloudcloner.html?success=0", code=302)
+        return redirect("https://andrew-zhu.com/dnd/dicecloudcloner.html?error=BAD_USER_INFO", code=302)
 
     for coll, items in char_data.items():
         for item in items:
@@ -64,7 +64,10 @@ def clone_dicecloud():
                     parent['_id'] = new_id
                 item['parent']['id'] = id_map[item['parent']['id']]
 
-            client.insert(coll.lower(), item)
+            try:
+                client.insert(coll.lower(), item)
+            except Exception as e:
+                return redirect(f"https://andrew-zhu.com/dnd/dicecloudcloner.html?error={type(e)}", code=302)
 
     return redirect(f"https://dicecloud.com/character/{id_map[url]}", code=302)
 

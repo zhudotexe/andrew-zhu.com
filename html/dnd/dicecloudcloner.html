@@ -21,8 +21,31 @@
   </h1>
   <p>
     This tool clones an existing sheet on Dicecloud. It won't steal your credentials. You can find the source code
-    <a href="https://github.com/mommothazaz123/andrew-zhu.com">here</a>.
+    <a href="https://github.com/mommothazaz123/andrew-zhu.com/tree/master/html/dnd">here</a>.
   </p>
+  <form action="https://api.andrew-zhu.com/dicecloudcloner" method="POST">
+    <div class="form-group">
+      <label for="username">Dicecloud Username</label>
+      <input type="text" class="form-control" id="username" placeholder="Dicecloud Username" required>
+    </div>
+    <div class="form-group">
+      <label for="password">Dicecloud Password</label>
+      <input type="password" class="form-control" id="password" placeholder="Dicecloud Password" required>
+    </div>
+    <div class="form-group">
+      <label for="apiKey">Dicecloud API Key</label>
+      <input type="password" class="form-control" id="apiKey" placeholder="Dicecloud API Key" required>
+    </div>
+    <div class="form-group">
+      <label for="charUrl">Character URL</label>
+      <input type="text" class="form-control" id="charUrl" placeholder="Character URL" required>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Go</button>
+  </form>
+  <div class="alert alert-danger" style="visibility: hidden" id="error">
+    Failed to clone sheet. Make sure all the fields are correct.
+  </div>
 </div>
 
 <footer class="footer">
@@ -53,5 +76,6 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
         integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
         crossorigin="anonymous"></script>
+<script src="dicecloudcloner.js"></script>
 </body>
 </html>

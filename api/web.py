@@ -3,7 +3,7 @@ import os
 import requests
 from flask import Flask, request, redirect
 
-from api.lib.dicecloudClient import DicecloudClient
+from lib.dicecloudClient import DicecloudClient
 
 TESTING = True if os.environ.get("TESTING") else False
 

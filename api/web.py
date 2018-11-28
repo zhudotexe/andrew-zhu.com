@@ -35,7 +35,7 @@ def clone_dicecloud():
 
     id_map = {}
     try:
-        client = DicecloudClient(username, password, debug=True)
+        client = DicecloudClient(username, password)
         client.initialize()
         char_data = response.json()
     except:

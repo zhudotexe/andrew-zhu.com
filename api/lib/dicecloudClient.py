@@ -63,7 +63,7 @@ def clone_sheet(url, username, password, api_key):
 
     id_map = {}
     try:
-        client = DicecloudClient(username, password, debug=True)
+        client = DicecloudClient(username, password)
         client.initialize()
     except:
         raise Exception("BAD_USER_INFO")

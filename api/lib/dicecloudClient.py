@@ -74,7 +74,12 @@ def clone_sheet(url, username, password, api_key):
         nonlocal remaining
         remaining -= 1
 
+    IGNORED = ("Dexterity Armor Bonus", "Proficiency bonus by level", "Natural Armor", "Natural Carrying Capacity",
+               "Constitution modifier for each level")
+
     def insert(collection, doc):
+        if doc.get('name') in IGNORED:
+            return
         nonlocal remaining
         remaining += 1
         if '_id' in doc and doc['_id'] not in id_map.values():

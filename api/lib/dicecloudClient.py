@@ -108,6 +108,8 @@ def clone_sheet(url, username, password, api_key):
     while remaining:
         time.sleep(0.1)
 
+    client.logout()
+
     return id_map[url]
 
 

@@ -1,4 +1,3 @@
-import asyncio
 import logging
 import os
 import random
@@ -14,7 +13,7 @@ log = logging.getLogger(__name__)
 
 class DicecloudClient(MeteorClient):
     def __init__(self, username, password, *args, **kwargs):
-        super().__init__('ws://dicecloud.com/websocket', *args, **kwargs)
+        super().__init__('ws://dicecloud.com/websocket', auto_reconnect=False, *args, **kwargs)
         self.logged_in = False
         self.username = username
         self.password = password.encode()

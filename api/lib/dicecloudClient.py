@@ -63,7 +63,7 @@ def clone_sheet(url, username, password, api_key):
 
     id_map = {}
     try:
-        client = DicecloudClient(username, password)
+        client = DicecloudClient(username, password, debug=True)
         client.initialize()
     except:
         raise Exception("BAD_USER_INFO")
@@ -74,36 +74,36 @@ def clone_sheet(url, username, password, api_key):
         nonlocal remaining
         remaining -= 1
 
-    def insert(item):
+    def insert(collection, doc):
         nonlocal remaining
         remaining += 1
-        if '_id' in item and item['_id'] not in id_map.values():
+        if '_id' in doc and doc['_id'] not in id_map.values():
             new_id = client.generate_id()
-            id_map[item['_id']] = new_id
-            item['_id'] = new_id
-        if 'owner' in item:
-            item['owner'] = client.user_id
-        if 'charId' in item:
-            if item['charId'] not in id_map:
+            id_map[doc['_id']] = new_id
+            doc['_id'] = new_id
+        if 'owner' in doc:
+            doc['owner'] = client.user_id
+        if 'charId' in doc:
+            if doc['charId'] not in id_map:
                 parent = char_data['characters'][0]
-                insert(parent)
-            item['charId'] = id_map[item['charId']]
-        if 'parent' in item:
-            if item['parent']['id'] not in id_map:
-                parent_coll = item['parent']['collection'].lower()
-                parent = next(i for i in char_data[parent_coll] if i['_id'] == item['parent']['id'])
-                insert(parent)
-            item['parent']['id'] = id_map[item['parent']['id']]
+                insert('characters', parent)
+            doc['charId'] = id_map[doc['charId']]
+        if 'parent' in doc:
+            if doc['parent']['id'] not in id_map:
+                parent_coll = doc['parent']['collection'].lower()
+                parent = next(i for i in char_data[parent_coll] if i['_id'] == doc['parent']['id'])
+                insert(parent_coll, parent)
+            doc['parent']['id'] = id_map[doc['parent']['id']]
 
         try:
-            client.insert(coll, item, callback=on_insert)
+            client.insert(collection, doc, callback=on_insert)
         except Exception:
             raise
 
     for coll, items in char_data.items():
         for item in items:
             if '_id' in item and item['_id'] not in id_map and item['_id'] not in id_map.values():
-                insert(item)
+                insert(coll, item)
 
     while remaining:
         time.sleep(0.1)
@@ -113,3 +113,7 @@ def clone_sheet(url, username, password, api_key):
 
 class LoginFailure(Exception):
     pass
+
+
+if __name__ == '__main__':
+    clone_sheet(input("URL"), input("Username"), input("Password"), input("API key"))

@@ -16,6 +16,7 @@ def hello_world():
 
 @app.route('/dicecloudcloner', methods=["POST"])
 def clone_dicecloud():
+    return redirect("https://andrew-zhu.com/dnd/dicecloudcloner.html?error=TOOL_REMOVED", code=302)
     data = request.form
     username = data.get('username')
     password = data.get('password')

@@ -1,10 +1,12 @@
 import os
 
-from flask import Flask, redirect, jsonify
+from flask import Flask, jsonify, redirect
+from flask_cors import CORS
 
 TESTING = True if os.environ.get("TESTING") else False
 
 app = Flask(__name__)
+CORS(app)
 
 
 @app.route('/', methods=["GET"])

@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, redirect
+from flask import Flask, redirect, jsonify
 
 TESTING = True if os.environ.get("TESTING") else False
 
@@ -19,7 +19,7 @@ def clone_dicecloud():
 
 @app.route('/autochar_options', methods=["GET"])
 def autochar_options():
-    return {
+    return jsonify({
         "races": ["asdf", "foo"],
         "classes": [
             {
@@ -32,7 +32,7 @@ def autochar_options():
             }
         ],
         "backgrounds": ["a", "b"]
-    }
+    })
 
 
 if __name__ == '__main__':

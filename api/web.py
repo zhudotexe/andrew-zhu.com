@@ -43,13 +43,13 @@ def autochar():
     data = request.form
     api_key = data.get('apiKey')
     name = data.get('charName')
-    level = data.get('level')
-    race_i = data.get('race')
-    klass_i = data.get('class')
-    subclass_i = data.get('subclass')
-    background_i = data.get('background')
-
-    if any(d is None for d in (api_key, name, level, race_i, klass_i, background_i)):
+    try:
+        level = int(data.get('level'))
+        race_i = int(data.get('race'))
+        klass_i = int(data.get('class'))
+        subclass_i = int(data.get('subclass'))
+        background_i = int(data.get('background'))
+    except (ValueError, TypeError):
         return redirect("https://andrew-zhu.com/dnd/dicecloudtools/autochar.html?error=MISSING_FIELD", code=302)
 
     race = c.fancyraces[race_i]
@@ -60,7 +60,7 @@ def autochar():
     try:
         new_id = create_char(api_key, name, level, race, klass, subclass, background)
     except Exception as e:
-        return redirect(f"https://andrew-zhu.com/dnd/dicecloudcloner.html?error={e}", code=302)
+        return redirect(f"https://andrew-zhu.com/dnd/dicecloudtools/autochar.html?error={e}", code=302)
 
     return redirect(f"https://dicecloud.com/character/{new_id}", code=302)
 

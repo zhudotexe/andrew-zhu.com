@@ -22,7 +22,7 @@ class DicecloudClient:
 
     def __init__(self, username, password, api_key, debug=False, no_meteor=False):
         self.username = username
-        self.encoded_password = password.encode()
+        self.encoded_password = password.encode() if password else None
         if not no_meteor:
             self.meteor_client = MeteorClient(SOCKET_BASE, debug=debug)
         else:

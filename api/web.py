@@ -5,6 +5,7 @@ from flask_cors import CORS
 
 from dicecloud_tools.autochar import create_char
 from lib.compendium import c
+from lib.dicecloud.client import DicecloudClient
 
 TESTING = True if os.environ.get("TESTING") else False
 
@@ -63,6 +64,32 @@ def autochar():
         return redirect(f"https://andrew-zhu.com/dnd/dicecloudtools/autochar.html?error={e}", code=302)
 
     return redirect(f"https://dicecloud.com/character/{new_id}", code=302)
+
+
+@app.route('/spell_options', methods=["GET"])
+def spell_options():
+    spells = []
+    for i, spell in enumerate(c.spells):
+        spells.append({"name": spell.name, "classes": "".join(spell.classes).lower(), "level": spell.level, "index": i})
+
+    return jsonify(spells)
+
+
+@app.route('/spellbook', methods=["POST"])
+def spellbook():
+    data = request.get_json()
+    api_key = data.get('apiKey')
+    url = data.get('charURL')
+    if 'dicecloud.com' in url:
+        url = url.split('/character/')[-1].split('/')[0]
+    spells = data.get('spells')
+    try:
+        spells = [c.spells[s['index']] for s in spells]
+        dc = DicecloudClient(None, None, api_key, no_meteor=True)
+        dc.add_spells(url, spells)
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)})
+    return jsonify({"success": True, "inserted": len(spells)})
 
 
 if __name__ == '__main__':

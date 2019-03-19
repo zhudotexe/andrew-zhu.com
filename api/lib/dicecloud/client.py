@@ -74,7 +74,7 @@ class DicecloudClient:
             list_id = next((l for l in char.get('spellLists', []) if l['name'].lower() == list_name.lower()), None)
         else:
             list_id = next((l for l in char.get('spellLists', [])), None)
-        return list_id
+        return list_id['_id']
 
     def get_character(self, char_id):
         return self.http.get(f'/character/{char_id}/json')
@@ -91,7 +91,7 @@ class DicecloudClient:
         """
         list_id = self._get_list_id(character_id, spell_list)
         if not list_id:  # still
-            raise InsertFailure("No matching spell lists on origin sheet. Run `!update` if this seems incorrect.")
+            raise InsertFailure("No matching spell lists on origin sheet.")
         return self.http.post(f'/api/character/{character_id}/spellList/{list_id}', [s.to_dict() for s in spells])
 
     def create_character(self, name: str = "New Character", gender: str = None, race: str = None,

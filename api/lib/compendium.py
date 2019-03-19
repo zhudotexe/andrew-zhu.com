@@ -132,7 +132,7 @@ class Spell:
                     return 10
         return -1
 
-    def to_dicecloud(self):
+    def to_dict(self):
         mat = re.search(r'\(([^()]+)\)', self.components)
         text = self.description.replace('\n', '\n  ')
         if self.higherlevels:

@@ -1,4 +1,4 @@
-const API_BASE = "http://127.0.0.1:5000"; // "https://api.andrew-zhu.com";
+const API_BASE = "https://api.andrew-zhu.com";
 
 // error and success messages
 const urlParams = new URLSearchParams(window.location.search);

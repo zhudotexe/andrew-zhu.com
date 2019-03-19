@@ -46,14 +46,15 @@ document.getElementById("klass").onchange = function (e) {
     let subclasses = klass.subclasses;
 
     let subclassForm = document.getElementById("subclass-group");
+    let subclassSelect = document.getElementById("subclass");
     if (subclasses.length) {
         subclassForm.style.visibility = "visible";
-        let subclassSelect = document.getElementById("subclass");
         subclassSelect.options.length = 0;
         for (let i = 0; i < subclasses.length; i++) {
             subclassSelect.options[subclassSelect.options.length] = new Option(subclasses[i], i + '');
         }
     } else {
         subclassForm.style.visibility = "hidden";
+        subclassSelect.options.length = 0;
     }
 };

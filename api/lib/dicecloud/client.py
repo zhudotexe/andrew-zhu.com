@@ -20,15 +20,21 @@ class DicecloudClient:
     instance = None
     user_id = None
 
-    def __init__(self, username, password, api_key, debug=False):
+    def __init__(self, username, password, api_key, debug=False, no_meteor=False):
         self.username = username
         self.encoded_password = password.encode()
-        self.meteor_client = MeteorClient(SOCKET_BASE, debug=debug)
+        if not no_meteor:
+            self.meteor_client = MeteorClient(SOCKET_BASE, debug=debug)
+        else:
+            self.meteor_client = None
         self.http = DicecloudHTTP(API_BASE, api_key, debug=debug)
         self.logged_in = False
         self.debug = debug
 
     def initialize(self):
+        if self.meteor_client is None:
+            log.info(f"Initialized without Meteor.")
+            return
         log.info(f"Initializing Dicecloud Meteor client (debug={TESTING})")
         self.meteor_client.connect()
         loops = 0
@@ -57,22 +63,17 @@ class DicecloudClient:
             return
         self.initialize()
 
-    def _get_list_id(self, character, list_name=None):
+    def _get_list_id(self, character_id, list_name=None):
         """
-        :param character: (Character) the character to get the spell list ID of.
+        :param character: (str) the character to get the spell list ID of.
         :param list_name: (str) The name of the spell list to look for. Returns default if not passed.
         :return: (str) The default list id.
         """
-        if character.get_cached_spell_list_id():
-            return character.get_cached_spell_list_id()
-        char_id = character.id[10:]
-
-        char = self.get_character(char_id)
+        char = self.get_character(character_id)
         if list_name:
             list_id = next((l for l in char.get('spellLists', []) if l['name'].lower() == list_name.lower()), None)
         else:
             list_id = next((l for l in char.get('spellLists', [])), None)
-        character.update_cached_spell_list_id(list_id)
         return list_id
 
     def get_character(self, char_id):
@@ -82,22 +83,20 @@ class DicecloudClient:
         """Adds a spell to the dicecloud list."""
         return self.add_spells(character, [spell])
 
-    def add_spells(self, character, spells, spell_list=None):
+    def add_spells(self, character_id, spells, spell_list=None):
         """
-        :param character: (Character) The character to add spells for.
+        :param character_id: (str) The character to add spells for.
         :param spells: (list) The list of spells to add
         :param spell_list: (str) The spell list name to search for in Dicecloud.
         """
-        assert character.live
-        list_id = self._get_list_id(character, spell_list)
+        list_id = self._get_list_id(character_id, spell_list)
         if not list_id:  # still
             raise InsertFailure("No matching spell lists on origin sheet. Run `!update` if this seems incorrect.")
-        return self.http.post(f'/api/character/{character.id[10:]}/spellList/{list_id}',
-                              [s.to_dicecloud() for s in spells])
+        return self.http.post(f'/api/character/{character_id}/spellList/{list_id}', [s.to_dict() for s in spells])
 
     def create_character(self, name: str = "New Character", gender: str = None, race: str = None,
                          backstory: str = None):
-        data = {'name': name, 'writers': [self.user_id]}
+        data = {'name': name}
         if gender is not None:
             data['gender'] = gender
         if race is not None:

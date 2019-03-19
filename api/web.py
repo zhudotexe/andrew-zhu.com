@@ -85,6 +85,8 @@ def spellbook():
     spells = data.get('spells')
     try:
         spells = [c.spells[s['index']] for s in spells]
+        if not spells:
+            raise Exception("You are not inserting any spells.")
         dc = DicecloudClient(None, None, api_key, no_meteor=True)
         dc.add_spells(url, spells)
     except Exception as e:

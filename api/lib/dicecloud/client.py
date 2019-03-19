@@ -71,10 +71,12 @@ class DicecloudClient:
         """
         char = self.get_character(character_id)
         if list_name:
-            list_id = next((l for l in char.get('spellLists', []) if l['name'].lower() == list_name.lower()), None)
+            spell_list = next((l for l in char.get('spellLists', []) if l['name'].lower() == list_name.lower()), None)
         else:
-            list_id = next((l for l in char.get('spellLists', [])), None)
-        return list_id['_id']
+            spell_list = next((l for l in char.get('spellLists', [])), None)
+        if not spell_list:
+            raise InsertFailure("No spell list found on sheet.")
+        return spell_list['_id']
 
     def get_character(self, char_id):
         return self.http.get(f'/character/{char_id}/json')

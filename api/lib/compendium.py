@@ -4,44 +4,6 @@ import re
 from lib.rendering import render
 
 
-class Compendium:
-    def __init__(self):
-        with open('./static/races.json', 'r') as f:
-            _raw = json.load(f)
-            self.rfeats = []
-            self.fancyraces = [Race.from_data(r) for r in _raw]
-            for race in _raw:
-                for entry in race['entries']:
-                    if isinstance(entry, dict) and 'name' in entry:
-                        temp = {'name': "{}: {}".format(race['name'], entry['name']),
-                                'text': render(entry['entries']), 'srd': race['srd']}
-                        self.rfeats.append(temp)
-        with open('./static/classes.json', 'r') as f:
-            self.classes = json.load(f)
-        with open('./static/classfeats.json') as f:
-            self.cfeats = json.load(f)
-        with open('./static/spells.json', 'r') as f:
-            self.spells = [Spell.from_data(r) for r in json.load(f)]
-        with open('./static/items.json', 'r') as f:
-            _items = json.load(f)
-            self.items = [i for i in _items if i.get('type') is not '$']
-        with open('./static/backgrounds.json', 'r') as f:
-            self.backgrounds = [Background.from_data(b) for b in json.load(f)]
-        self.subclasses = self.load_subclasses()
-
-    def load_subclasses(self):
-        s = []
-        for _class in self.classes:
-            subclasses = _class.get('subclasses', [])
-            for sc in subclasses:
-                sc['name'] = f"{_class['name']}: {sc['name']}"
-            s.extend(subclasses)
-        return s
-
-
-c = Compendium()
-
-
 class Race:
     def __init__(self, name: str, source: str, page: int, size: str, speed, asi, entries, srd: bool = False,
                  darkvision: int = 0):
@@ -206,3 +168,41 @@ class Background:
     @classmethod
     def from_data(cls, raw):
         return cls(**raw)
+
+
+class Compendium:
+    def __init__(self):
+        with open('./static/races.json', 'r') as f:
+            _raw = json.load(f)
+            self.rfeats = []
+            self.fancyraces = [Race.from_data(r) for r in _raw]
+            for race in _raw:
+                for entry in race['entries']:
+                    if isinstance(entry, dict) and 'name' in entry:
+                        temp = {'name': "{}: {}".format(race['name'], entry['name']),
+                                'text': render(entry['entries']), 'srd': race['srd']}
+                        self.rfeats.append(temp)
+        with open('./static/classes.json', 'r') as f:
+            self.classes = json.load(f)
+        with open('./static/classfeats.json') as f:
+            self.cfeats = json.load(f)
+        with open('./static/spells.json', 'r') as f:
+            self.spells = [Spell.from_data(r) for r in json.load(f)]
+        with open('./static/items.json', 'r') as f:
+            _items = json.load(f)
+            self.items = [i for i in _items if i.get('type') is not '$']
+        with open('./static/backgrounds.json', 'r') as f:
+            self.backgrounds = [Background.from_data(b) for b in json.load(f)]
+        self.subclasses = self.load_subclasses()
+
+    def load_subclasses(self):
+        s = []
+        for _class in self.classes:
+            subclasses = _class.get('subclasses', [])
+            for sc in subclasses:
+                sc['name'] = f"{_class['name']}: {sc['name']}"
+            s.extend(subclasses)
+        return s
+
+
+c = Compendium()

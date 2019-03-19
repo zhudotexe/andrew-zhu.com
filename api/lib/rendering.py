@@ -1,7 +1,10 @@
+import logging
 import re
 
 ABILITY_MAP = {'str': 'Strength', 'dex': 'Dexterity', 'con': 'Constitution',
                'int': 'Intelligence', 'wis': 'Wisdom', 'cha': 'Charisma'}
+
+log = logging.getLogger(__name__)
 
 
 def render(text, md_breaks=False):
@@ -64,9 +67,9 @@ def render(text, md_breaks=False):
             elif entry['type'] == 'bonusSpeed':
                 out.append(f"{entry['value']} feet")
             else:
-                log.warning(f"Missing astranauta entry type parse: {entry}")
+                log.warning(f"Missing entry type parse: {entry}")
         else:
-            log.warning(f"Unknown astranauta entry: {entry}")
+            log.warning(f"Unknown entry: {entry}")
 
     return parse_data_formatting(join_str.join(out))
 

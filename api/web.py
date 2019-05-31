@@ -1,3 +1,4 @@
+import json
 import os
 
 from flask import Flask, jsonify, redirect, request
@@ -16,11 +17,6 @@ CORS(app)
 @app.route('/', methods=["GET"])
 def hello_world():
     return 'Hello World!'
-
-
-@app.route('/dicecloudcloner', methods=["POST"])
-def clone_dicecloud():
-    return redirect("https://andrew-zhu.com/dnd/dicecloudcloner.html?error=TOOL_REMOVED", code=302)
 
 
 @app.route('/autochar_options', methods=["GET"])
@@ -92,6 +88,13 @@ def spellbook():
     except Exception as e:
         return jsonify({"success": False, "error": str(e)})
     return jsonify({"success": True, "inserted": len(spells)})
+
+
+@app.route('/game_options', methods=["GET"])
+def game_options():
+    with open("static/games.json") as f:
+        games = json.load(f)
+    return jsonify(games)
 
 
 if __name__ == '__main__':

@@ -124,6 +124,8 @@ submitForm = function () {
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>`
+            spellsToAdd.length = 0; // Clear the array including all of its references
+            updateToAddList();
             } else {
                 alert = `<div class="alert alert-danger alert-dismissible fade show" role="alert">
               Failed to insert: ${data.error}

@@ -40,9 +40,26 @@ updateToAddList = function () {
     let ul = document.getElementById("to-add-list");
     $(ul).empty();
     for (let spell of spellsToAdd) {
-        $('<li class="list-group-item">' + spell.name + '</li>').appendTo(ul);
+        $(`<button class="list-group-item list-group-item-action" id="selected-spell-${spell.index}">${spell.name}</button>`).appendTo(ul);
+        document.getElementById(`selected-spell-${spell.index}`).onclick = () => {
+            toggleSingleSpell(spell);
+        };
     }
 };
+
+clearToAdd = function () {
+    // set all search elements to active
+    for (let spell of spellsToAdd) {
+        let searchElem = document.getElementById(`spell-${spell.index}`);
+        if (searchElem != null) {
+            searchElem.classList.remove("active");
+        }
+    }
+
+    spellsToAdd.length = 0; // Clear the array including all of its references
+    updateToAddList();
+};
+document.getElementById("clear-list-button").onclick = clearToAdd;
 
 // onload, load spell metadata
 $(function () {
@@ -60,7 +77,9 @@ toggleSingleSpell = function (spell) {
     if (spellsToAdd.includes(spell)) {
         let i = spellsToAdd.indexOf(spell);
         spellsToAdd.splice(i, 1);
-        searchElem.classList.remove("active");
+        if (searchElem != null) {
+            searchElem.classList.remove("active");
+        }
     } else {
         spellsToAdd.push(spell);
         searchElem.classList.add("active");
@@ -119,20 +138,19 @@ submitForm = function () {
             let alert;
             if (data.success) {
                 alert = `<div class="alert alert-success alert-dismissible fade show" role="alert">
-              Successfully inserted ${data.inserted} spells.
-              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>`
-            spellsToAdd.length = 0; // Clear the array including all of its references
-            updateToAddList();
+                  Successfully inserted ${data.inserted} spells.
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>`;
+                clearToAdd();
             } else {
                 alert = `<div class="alert alert-danger alert-dismissible fade show" role="alert">
-              Failed to insert: ${data.error}
-              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>`
+                  Failed to insert: ${data.error}
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>`
             }
             $("body").prepend($(alert));
         }

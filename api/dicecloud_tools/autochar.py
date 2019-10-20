@@ -171,3 +171,21 @@ def create_char(api_key, name, level, race, _class, subclass, background):
     dc.insert_proficiencies(char_id, profs_to_add)
 
     return char_id
+
+
+if __name__ == '__main__':
+    from lib.compendium import c
+
+    api_key = input("API Key: ")
+    name = input("Name: ")
+    level = int(input("Level: "))
+    racename = input("Race: ")
+    race = next(r for r in c.fancyraces if r['name'].lower() == racename.lower().strip())
+    klassname = input("Class: ")
+    klass = next(r for r in c.classes if r['name'].lower() == klassname.lower().strip())
+    subclassname = input("Subclass: ")
+    subclass = next(r for r in klass['subclasses'] if r['name'].lower() == subclassname.lower().strip())
+    backgroundname = input("Background: ")
+    background = next(r for r in c.backgrounds if r['name'].lower() == backgroundname.lower().strip())
+
+    create_char(api_key, name, level, race, klass, subclass, background)

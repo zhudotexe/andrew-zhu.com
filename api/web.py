@@ -90,12 +90,5 @@ def spellbook():
     return jsonify({"success": True, "inserted": len(spells)})
 
 
-@app.route('/game_options', methods=["GET"])
-def game_options():
-    with open("static/games.json") as f:
-        games = json.load(f)
-    return jsonify(games)
-
-
 if __name__ == '__main__':
     app.run()

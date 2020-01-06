@@ -134,7 +134,7 @@ class Spell:
 
     def to_dict(self):
         mat = re.search(r'\(([^()]+)\)', self.components)
-        text = self.description.replace('\n', '\n  ')
+        text = self.description.replace('\n', '  \n')
         if self.higherlevels:
             text += f"\n\n**At Higher Levels**: {self.higherlevels}"
         return {

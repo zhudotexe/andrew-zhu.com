@@ -1,5 +1,6 @@
 import json
 import os
+import traceback
 
 from flask import Flask, jsonify, redirect, request
 from flask_cors import CORS
@@ -86,6 +87,7 @@ def spellbook():
         dc = DicecloudClient(None, None, api_key, no_meteor=True)
         dc.add_spells(url, spells)
     except Exception as e:
+        traceback.print_exc()
         return jsonify({"success": False, "error": str(e)})
     return jsonify({"success": True, "inserted": len(spells)})
 

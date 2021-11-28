@@ -36,10 +36,10 @@ class DicecloudHTTP:
                 resp = requests.request(method, f"{self.base}{endpoint}", data=body, headers=headers, params=query)
                 log.info(f"Dicecloud returned {resp.status_code} ({endpoint})")
                 if resp.status_code == 200:
-                    data = resp.json(encoding='utf-8')
+                    data = resp.json()
                     break
                 elif resp.status_code == 429:
-                    timeout = resp.json(encoding='utf-8')
+                    timeout = resp.json()
                     log.warning(f"Dicecloud ratelimit hit ({endpoint}) - resets in {timeout}ms")
                     raise Timeout("You have hit the rate limit.")
                 elif 400 <= resp.status_code < 600:
